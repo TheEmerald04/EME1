@@ -1,26 +1,35 @@
 const display = document.getElementById('display');
-const buttons = document.querySelectorAll('btn');
+const buttons = document.querySelectorAll('.btn');
 
-buttons.forEach(button =>{
-    button.addEventListener('click', () => {
-        const value = button.textContent;
+buttons.forEach(button => {
+  button.addEventListener('click', () => {
+    const value = button.textContent;
 
-        if (value === '=') {
-          expression = '';
-        } else if (value === '⌫') {
-          try {
-              expression = expression.replace(/\^/g, '**');
-              display.textContent = eval(expression);
-              expression = display.textContent;
-              return;
-          } catch (err) {
-            display.textContent = 'Error';
-            expression = '';  
-            return;
-         }
-      } else { 
-        expression += value;
-      }      
-        display.textContent = expression
-    });
+    if (value === '=') {
+      calculate();
+    } else if (value === '⌫') {
+      display.textContent = display.textContent.slice(0, -1);
+    } else {
+      display.textContent += convertToJSOperator(value);
+    }
+  });
 });
+
+function convertToJSOperator(symbol) {
+  switch (symbol) {
+    case '×': return '*';
+    case '÷': return '/';
+    case '−': return '-';
+    case '+': return '+';
+    case '^': return '**';
+    default: return symbol;
+  }
+}
+
+function calculate() {
+  try {
+    display.textContent = eval(display.textContent);
+  } catch (e) {
+    display.textContent = 'Error';
+  }
+}
