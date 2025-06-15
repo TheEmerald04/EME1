@@ -6,30 +6,21 @@ buttons.forEach(button =>{
         const value = button.textContent;
 
         if (value === '=') {
-          calculate();
+          expression = '';
         } else if (value === '⌫') {
-          display.textContent = display.textContent.slice(0, -1);
-        } else {
-          display.textContent += convertToJSOperator(value);  
-        }
+          try {
+              expression = expression.replace(/\^/g, '**');
+              display.textContent = eval(expression);
+              expression = display.textContent;
+              return;
+          } catch (err) {
+            display.textContent = 'Error';
+            expression = '';  
+            return;
+         }
+      } else { 
+        expression += value;
+      }      
+        display.textContent = expression
     });
 });
-
-function convertToJSOperator(symbol) {
-    switch (symbol) {
-        case 'x': return '*';
-        case '÷': return '/';
-        case '-': return '-';
-        case '+': return '+';
-        case '^': return '**';
-        default: return symbol;
-    }
-}
-
-function calculate() {
-    try {
-        display.textContent = eval(display.textContent);
-    } catch (e) {
-      display.textContent = 'Error';
-    }
-}
